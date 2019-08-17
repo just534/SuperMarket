@@ -18,7 +18,7 @@ namespace DAL
         /// 执行插入、更新、删除的方法
         /// </summary>
         /// <param name="sql">sql语句</param>
-        /// <param name="parameters">参数信息</param>
+        /// <param name="parameters">参数信息,没有请传递NULL</param>
         /// <returns>返回受影响的行数</returns>
         public static int Update(string sql, SqlParameter[] parameters)
         {
@@ -52,7 +52,7 @@ namespace DAL
         /// 执行单个查询结果的方法
         /// </summary>
         /// <param name="sql">sql语句</param>
-        /// <param name="parameters">参数信息</param>
+        /// <param name="parameters">参数信息,没有请传递NULL</param>
         /// <returns>返回单个Object类型的结果</returns>
         public static object GetSingleResult(string sql, SqlParameter[] parameters)
         {
@@ -82,7 +82,13 @@ namespace DAL
         #endregion
 
         #region 带参数的GetResult方法
-        public SqlDataReader GetResult(string sql,SqlParameter[] parameters)
+        /// <summary>
+        /// 执行带参数的GetResult方法
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="parameters">参数信息,没有请传递NULL</param>
+        /// <returns>返回一个结果集</returns>
+        public static SqlDataReader GetResult(string sql,SqlParameter[] parameters)
         {
             SqlConnection sqlcon = new SqlConnection(connstring);
             SqlCommand command = new SqlCommand(sql, sqlcon);
@@ -103,6 +109,57 @@ namespace DAL
         }
 
 
+        #endregion
+
+        #region 带参数的事务执行更新数据
+        /// <summary>
+        /// 执行事务的方法
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="parameter">参数信息,没有请传递NULL</param>
+        /// <returns></returns>
+
+        public static bool UpdateByTran(List<string> sql,SqlParameter[] parameter)
+        {
+            SqlConnection sqlcon = new SqlConnection(connstring);
+            SqlCommand command = new SqlCommand();
+            command.Connection = sqlcon;
+            if (parameter != null)
+            {
+                command.Parameters.AddRange(parameter);
+            }
+            try
+            {
+                sqlcon.Open();
+                command.Transaction = sqlcon.BeginTransaction();
+                foreach (string item in sql)
+                {
+                    command.CommandText = item;
+                    command.ExecuteNonQuery();
+                }
+                command.Transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (command.Transaction != null)
+                {
+                    command.Transaction.Rollback();
+                    string info = "执行 public static bool UpdateByTran(List<string> sql,SqlParameter[] parameter 方法时出错" + ex.Message;
+                    throw new Exception(info);
+                }
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                if (command.Transaction != null)
+                {
+                    command.Transaction = null;
+                }
+                sqlcon.Close();
+            }
+
+        }
         #endregion
     }
 }

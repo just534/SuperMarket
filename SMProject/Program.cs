@@ -16,7 +16,17 @@ namespace SMProject
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmSaleManage());
+            FrmLogin objFrm = new FrmLogin();
+            if (objFrm.ShowDialog() == DialogResult.OK)
+            {
+                Application.Run(new FrmSaleManage());
+            }
+            else
+            {
+                Application.Exit();
+            }
+            
+           
         }
 
 
