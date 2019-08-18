@@ -46,6 +46,7 @@
             this.txtLoginId.Size = new System.Drawing.Size(134, 21);
             this.txtLoginId.TabIndex = 0;
             this.txtLoginId.Text = "10001";
+            this.txtLoginId.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtLoginId_KeyDown);
             // 
             // btnCancel
             // 
@@ -102,6 +103,7 @@
             this.txtLoignPwd.Size = new System.Drawing.Size(134, 21);
             this.txtLoignPwd.TabIndex = 1;
             this.txtLoignPwd.Text = "123456";
+            this.txtLoignPwd.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtLoignPwd_KeyDown);
             // 
             // label3
             // 

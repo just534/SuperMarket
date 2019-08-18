@@ -11,6 +11,7 @@ namespace DAL
 {
     public class SalePersonService
     {
+        #region 用户登录方法
         /// <summary>
         /// 根据用户账号和密码实现用户登录
         /// </summary>
@@ -32,5 +33,40 @@ namespace DAL
                 return objsaleperson;
             }
         }
+        #endregion
+
+        #region 登录日志
+        /// <summary>
+        /// 添加登录日志
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns>返回日志编号</returns>
+        public int WriteLog(LoginLog info)
+        {
+            string sql = "insert into LoginLogs(LoginId,SPName,ServerName) ";
+            sql += "values(@LoginId,@SPName,@ServerName);select @@identity";
+            SqlParameter[] param = new SqlParameter[]
+            {
+                new SqlParameter("@LoginId",info.LoginId),
+                new SqlParameter("@SPName",info.SPName),
+                new SqlParameter("@ServerName",info.ServerName)
+            };
+            try
+            {
+                return Convert.ToInt32(SQLHelp.GetSingleResult(sql, param));
+
+            }
+            catch (SqlException ex)
+            {
+
+                throw new Exception("应用程序与数据库连接出错，具体内容： " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        #endregion
     }
 }

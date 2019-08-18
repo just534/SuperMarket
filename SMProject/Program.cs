@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using MODELS;
 
 
 namespace SMProject
@@ -25,10 +26,11 @@ namespace SMProject
             {
                 Application.Exit();
             }
-            
+
+
            
         }
-
+        public static SalePerson CurrentPerson = new SalePerson();
 
 
     }
