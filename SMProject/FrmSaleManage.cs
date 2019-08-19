@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using DAL;
+using MODELS;
 
 
 namespace SMProject
@@ -45,12 +47,26 @@ namespace SMProject
 
         #endregion
 
-
+        private SalePersonService objSalePersonService = new SalePersonService();
         public FrmSaleManage()
         {
             InitializeComponent();
          
         }
-     
+
+        private void FrmSaleManage_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("确认退出程序吗?", "退出确认", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel) e.Cancel=true;
+            try
+            {
+                DateTime dt = SQLHelp.GetServerTime();
+                objSalePersonService.WriteExitLog(Program.CurrentPerson.LoginLogId, dt);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message,"错误提示");
+            }
+        }
     }
 }

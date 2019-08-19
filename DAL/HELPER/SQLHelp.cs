@@ -161,5 +161,21 @@ namespace DAL
 
         }
         #endregion
+
+        #region 获取服务器时间
+        public static DateTime GetServerTime()
+        {
+            string sql = "select getdate()";
+            try
+            {
+                return (DateTime)GetSingleResult(sql, null);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        #endregion
     }
 }

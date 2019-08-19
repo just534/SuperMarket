@@ -141,7 +141,6 @@
             this.dgvProdutList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvProdutList.Size = new System.Drawing.Size(918, 486);
             this.dgvProdutList.TabIndex = 53;
-
             // 
             // Num
             // 
@@ -215,7 +214,8 @@
             this.txtDiscount.TabIndex = 3;
             this.txtDiscount.Text = "0";
             this.txtDiscount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-
+            // 
+            // txtUnitPrice
             // 
             this.txtUnitPrice.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txtUnitPrice.Location = new System.Drawing.Point(633, 515);
@@ -224,7 +224,7 @@
             this.txtUnitPrice.TabIndex = 2;
             this.txtUnitPrice.Text = "0.00";
             this.txtUnitPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-         
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -295,7 +295,7 @@
             this.txtQuantity.TabIndex = 1;
             this.txtQuantity.Text = "1";
             this.txtQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-        
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -336,7 +336,8 @@
             this.txtProductId.Name = "txtProductId";
             this.txtProductId.Size = new System.Drawing.Size(223, 29);
             this.txtProductId.TabIndex = 0;
-
+            // 
+            // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -433,9 +434,6 @@
             this.lblSalePerson.TabIndex = 67;
             this.lblSalePerson.Text = "无";
             // 
-            // printDocument
-            // 
-
             // FrmSaleManage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -473,7 +471,7 @@
             this.Name = "FrmSaleManage";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "[喜科堂互联教育]-超市前台结算系统";
-       
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmSaleManage_FormClosing);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FrmMain_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FrmMain_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FrmMain_MouseUp);

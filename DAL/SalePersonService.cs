@@ -68,5 +68,31 @@ namespace DAL
             }
         }
         #endregion
+
+        #region 登出日志
+        public int WriteExitLog(int LogId,DateTime dt)
+        {
+            string sql = "Update LoginLogs set ExitTime=@dt where LogId=@LogId";
+            SqlParameter[] param = new SqlParameter[]
+            {
+                new SqlParameter("@dt",dt),
+                new SqlParameter("@LogId",LogId)
+            };
+            try
+            {
+                return SQLHelp.Update(sql, param);
+            }
+            catch (SqlException ex)
+            {
+
+                throw new Exception("应用程序与数据库连接出错，具体内容： " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        #endregion
     }
 }
