@@ -51,20 +51,28 @@ namespace SMProject
         public FrmSaleManage()
         {
             InitializeComponent();
-         
+            this.lblSerialNum .Text= this.CreateSerialNum();
+            this.lblSalePerson.Text = Program.CurrentPerson.SPName;
+        }
+        private string CreateSerialNum()
+        {
+            string serialNum = SQLHelp.GetServerTime().ToString("yyyyMMddHHmmssms");
+            Random rd = new Random();
+            serialNum += rd.Next(10, 99).ToString();
+            return serialNum;
         }
 
         private void FrmSaleManage_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //退出程序确认，并保存退出的时间到日志
             if (MessageBox.Show("确认退出程序吗?", "退出确认", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel) e.Cancel=true;
             try
             {
                 DateTime dt = SQLHelp.GetServerTime();
-                objSalePersonService.WriteExitLog(Program.CurrentPerson.LoginLogId, dt);
+                objSalePersonService.WriteExitLog(Program.CurrentPerson.LoginLogId, dt);//获取当前的操作员的日志ID，写入退出时间
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show(ex.Message,"错误提示");
             }
         }
