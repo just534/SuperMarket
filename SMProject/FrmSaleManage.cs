@@ -48,12 +48,19 @@ namespace SMProject
         #endregion
 
         private SalePersonService objSalePersonService = new SalePersonService();
+        private ProductService objProductService = new ProductService();
+        private List<Product> productlist = new List<Product>();
+        private BindingSource bs = new BindingSource();
+        
+        
         public FrmSaleManage()
         {
             InitializeComponent();
             this.lblSerialNum .Text= this.CreateSerialNum();
             this.lblSalePerson.Text = Program.CurrentPerson.SPName;
+            this.dgvProdutList.AutoGenerateColumns = false;
         }
+        #region 创建流水单号
         private string CreateSerialNum()
         {
             string serialNum = SQLHelp.GetServerTime().ToString("yyyyMMddHHmmssms");
@@ -61,6 +68,7 @@ namespace SMProject
             serialNum += rd.Next(10, 99).ToString();
             return serialNum;
         }
+        #endregion
 
         private void FrmSaleManage_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -75,6 +83,56 @@ namespace SMProject
             {
                 MessageBox.Show(ex.Message,"错误提示");
             }
+        }
+
+        private void txtProductId_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(this.txtProductId.Text.Length!=0 && e.KeyValue == 13)
+            {
+                MessageBox.Show("1");
+                //[1]验证信息
+                //[2]如果当前集合中不存在该商品那么添加该商品
+                var plist = from p in this.productlist
+                            where p.ProductId.Equals(this.txtProductId.Text.Trim())
+                            select p;
+                if (plist.Count()==0)
+                {
+                    AddNewProduct();
+                }
+                this.bs.DataSource = this.productlist;
+                this.dgvProdutList.DataSource = null;
+                this.dgvProdutList.DataSource = this.bs;
+            }
+        }
+
+        //新增加一个商品，前提是列表中没有该商品
+        private void AddNewProduct()
+        {
+            Product objproduct = objProductService.GetProductById(this.txtProductId.Text.Trim());
+            if (objproduct == null)
+            {
+                objproduct = new Product()
+                {
+                    ProductName = "暂时没有商品信息",
+                    ProductId = this.txtProductId.Text.Trim(),
+                    UnitPrice = Convert.ToDecimal(this.txtUnitPrice.Text.Trim()),
+                    Discount = Convert.ToInt32(this.txtDiscount.Text.Trim())
+                };
+            }
+            else
+            {
+                this.txtUnitPrice.Text = objproduct.UnitPrice.ToString();
+                this.txtDiscount.Text = objproduct.Discount.ToString();
+            }
+            objproduct.Quantity = Convert.ToInt32(this.txtQuantity.Text.Trim());
+            objproduct.SubTotal = Convert.ToDecimal(objproduct.Quantity * objproduct.UnitPrice);
+            if (objproduct.Discount != 0)//如果有折扣
+            {
+                objproduct.SubTotal*= Convert.ToDecimal(objproduct.Discount / 10);
+            }
+            objproduct.Num = this.productlist.Count + 1;//商品序号
+            this.productlist.Add(objproduct);
+            this.bs.MoveLast();
         }
     }
 }

@@ -336,6 +336,7 @@
             this.txtProductId.Name = "txtProductId";
             this.txtProductId.Size = new System.Drawing.Size(223, 29);
             this.txtProductId.TabIndex = 0;
+            this.txtProductId.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtProductId_KeyDown);
             // 
             // label2
             // 
