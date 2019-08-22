@@ -89,7 +89,6 @@ namespace SMProject
         {
             if(this.txtProductId.Text.Length!=0 && e.KeyValue == 13)
             {
-                MessageBox.Show("1");
                 //[1]验证信息
                 //[2]如果当前集合中不存在该商品那么添加该商品
                 var plist = from p in this.productlist
@@ -98,6 +97,15 @@ namespace SMProject
                 if (plist.Count()==0)
                 {
                     AddNewProduct();
+                }else//如果商品已经存在，那么更新数量和小计金额
+                {
+                    Product objproduct = plist.FirstOrDefault<Product>();
+                    objproduct.Quantity += Convert.ToInt32(this.txtQuantity.Text.Trim());
+                    objproduct.SubTotal = Convert.ToDecimal(objproduct.Quantity * objproduct.UnitPrice);
+                    if (objproduct.Discount != 0)
+                    {
+                        objproduct.SubTotal *= objproduct.Discount;
+                    }
                 }
                 this.bs.DataSource = this.productlist;
                 this.dgvProdutList.DataSource = null;

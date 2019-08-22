@@ -23,6 +23,7 @@ namespace DAL
                 SqlDataReader objReader = SQLHelp.GetResult(sql, param);
                 if (objReader.Read())
                 {
+                    objProduct = new Product();
                     objProduct.UnitPrice =Convert.ToDecimal(objReader["UnitPrice"]);
                     objProduct.ProductId = objReader["ProductId"].ToString();
                     objProduct.ProductName = objReader["ProductName"].ToString();
