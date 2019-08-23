@@ -141,6 +141,7 @@
             this.dgvProdutList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvProdutList.Size = new System.Drawing.Size(918, 486);
             this.dgvProdutList.TabIndex = 53;
+            this.dgvProdutList.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgvProdutList_RowsRemoved);
             // 
             // Num
             // 
@@ -214,6 +215,7 @@
             this.txtDiscount.TabIndex = 3;
             this.txtDiscount.Text = "0";
             this.txtDiscount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtDiscount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtOther_KeyDown);
             // 
             // txtUnitPrice
             // 
@@ -224,6 +226,7 @@
             this.txtUnitPrice.TabIndex = 2;
             this.txtUnitPrice.Text = "0.00";
             this.txtUnitPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtUnitPrice.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtOther_KeyDown);
             // 
             // label8
             // 
@@ -295,6 +298,7 @@
             this.txtQuantity.TabIndex = 1;
             this.txtQuantity.Text = "1";
             this.txtQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtQuantity.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtOther_KeyDown);
             // 
             // label6
             // 

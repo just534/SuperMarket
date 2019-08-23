@@ -87,7 +87,8 @@ namespace SMProject
 
         private void txtProductId_KeyDown(object sender, KeyEventArgs e)
         {
-            if(this.txtProductId.Text.Length!=0 && e.KeyValue == 13)
+            if( e.KeyValue == 13)
+            #region 添加商品
             {
                 //[1]验证信息
                 //[2]如果当前集合中不存在该商品那么添加该商品
@@ -104,13 +105,44 @@ namespace SMProject
                     objproduct.SubTotal = Convert.ToDecimal(objproduct.Quantity * objproduct.UnitPrice);
                     if (objproduct.Discount != 0)
                     {
-                        objproduct.SubTotal *= objproduct.Discount;
+                        objproduct.SubTotal *= Convert.ToDecimal(objproduct.Discount/10);
                     }
                 }
                 this.bs.DataSource = this.productlist;
                 this.dgvProdutList.DataSource = null;
-                this.dgvProdutList.DataSource = this.bs;
+                this.dgvProdutList.DataSource = this.bs;//显示商品列表
+                this.lblTotalMoney.Text = (from p in this.productlist select p.SubTotal).Sum().ToString();
+                this.txtProductId.Clear();
+                this.txtQuantity.Text = "1";
+                this.txtUnitPrice.Text = "0.00";
+                this.txtDiscount.Text = "0";
+                this.lblReceivedMoney.Text = "0.00";
+                this.txtProductId.Focus();
+
             }
+            #endregion
+            else if(e.KeyValue==38)//向上移动
+            {
+                if (this.dgvProdutList.RowCount == 0 || this.dgvProdutList.RowCount == 1) return;
+                {
+                    this.bs.MovePrevious();
+                }
+            }
+            else if (e.KeyValue == 40)
+            {
+                if (this.dgvProdutList.RowCount == 0 || this.dgvProdutList.RowCount == 1) return;
+                {
+                    this.bs.MoveNext();
+                }
+            }
+            else if (e.KeyValue == 46)//删除一行
+            {
+                if (this.dgvProdutList.RowCount == 0) return;
+                this.bs.RemoveCurrent();//这里删除列表的同时会删除集合中的数据
+                this.dgvProdutList.DataSource = null;
+                 this.dgvProdutList.DataSource = this.bs;
+            }
+
         }
 
         //新增加一个商品，前提是列表中没有该商品
@@ -141,6 +173,26 @@ namespace SMProject
             objproduct.Num = this.productlist.Count + 1;//商品序号
             this.productlist.Add(objproduct);
             this.bs.MoveLast();
+        }
+
+        #region 数量单价折后回车后直接回商品ID 输入框
+        private void txtOther_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == 13)
+            {
+                this.txtProductId.Focus();
+            }
+        }
+
+        #endregion
+
+        private void dgvProdutList_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            this.lblTotalMoney.Text = (from p in this.productlist select p.SubTotal).Sum().ToString();//更新总金额
+            for (int i = 0; i < this.productlist.Count; i++)
+            {
+                this.productlist[i].Num = i + 1;//更新商品序号
+            }
         }
     }
 }
