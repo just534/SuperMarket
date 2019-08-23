@@ -177,5 +177,33 @@ namespace DAL
             }
         }
         #endregion
+
+        #region 带参数的返回数据集方法
+        public static DataSet GetDataSet(string sql,SqlParameter[] parameter)//这里可以传入一个name
+        {
+            SqlConnection sqlconn = new SqlConnection(connstring);
+            SqlCommand sqlcommand = new SqlCommand(sql, sqlconn);
+            SqlDataAdapter da = new SqlDataAdapter(sqlcommand);
+            DataSet ds = new DataSet();
+            if (parameter != null)
+            {
+                sqlcommand.Parameters.AddRange(parameter);
+            }
+            try
+            {
+                sqlconn.Open();
+                da.Fill(ds);//fill(ds,name)这里把名字为name的datatable加入ds数据集，后面可以根据名字检索
+                return ds;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                sqlconn.Close();
+            }
+        }
+        #endregion
     }
 }
