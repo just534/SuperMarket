@@ -73,7 +73,8 @@
             this.txtMemberId.Name = "txtMemberId";
             this.txtMemberId.Size = new System.Drawing.Size(165, 30);
             this.txtMemberId.TabIndex = 1;
-        
+            this.txtMemberId.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberId_KeyDown);
+            // 
             // txtRealReceive
             // 
             this.txtRealReceive.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;

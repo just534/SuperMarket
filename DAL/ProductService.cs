@@ -50,50 +50,31 @@ namespace DAL
         public bool SaveSaleInfo(SaleList objSaleList,SMMembers objSMMembers)
         {
             List<string> sqllist = new List<string>();
-            SqlParameter[] parameter = {
-                new SqlParameter("@SerialNum",objSaleList.SerialNum),
-                new SqlParameter("@TotalMoney",objSaleList.TotalMoney),
-                new SqlParameter("@RealReceive",objSaleList.RealReceive),
-                new SqlParameter("@ReturnMoney",objSaleList.ReturnMoney),
-                new SqlParameter("@SalesPersonId",objSaleList.SalesPersonId),
-                new SqlParameter("@ProductId",null),
-                new SqlParameter("@ProductName",null),
-                new SqlParameter("@UnitPrice",null),
-                new SqlParameter("@Discount",null),
-                new SqlParameter("@Quantity",null),
-                new SqlParameter("@SubTotalMoney",null),
-                new SqlParameter("@Points",null),
-                new SqlParameter("@MemberId",null)
-            };
             string mainsql = "insert into SalesList(SerialNum, TotalMoney, RealReceive, ReturnMoney, SalesPersonId) ";
-            mainsql += "values(@SerialNum, @TotalMoney, @RealReceive, @ReturnMoney, @SalesPersonId)";
-            sqllist.Add(mainsql);
+            mainsql += "values('{0}', {1}, {2}, {3}, {4})";
+            sqllist.Add(string.Format(mainsql,objSaleList.SerialNum,objSaleList.TotalMoney,objSaleList.RealReceive,
+                objSaleList.ReturnMoney,objSaleList.SalesPersonId));
             foreach (SaleListDetail itemDetail in objSaleList.SaleListDetails)
             {
-                parameter[5] = new SqlParameter("@ProductId", itemDetail.ProductId);
-                parameter[6] = new SqlParameter("@ProductName", itemDetail.ProductName);
-                parameter[7] = new SqlParameter("@UnitPrice", itemDetail.UnitPrice);
-                parameter[8] = new SqlParameter("@Discount", itemDetail.Discount);
-                parameter[9] = new SqlParameter("@Quantity", itemDetail.Quantity);
-                parameter[10] = new SqlParameter("@SubTotalMoney", itemDetail.SubTotalMoney);
-                string detailsql = "insert into SaleListDetail(SerialNum, ProductId, ProductName, UnitPrice, Discount, Quantity, SubTotalMoney) ";
-                detailsql += "values(@SerialNum,@ProductId, @ProductName,@UnitPrice, @Discount, @Quantity, @SubTotalMoney)";
+                string detailsql = "insert into SalesListDetail(SerialNum, ProductId, ProductName, UnitPrice, Discount, Quantity, SubTotalMoney) ";
+                detailsql += "values('{0}','{1}', '{2}',{3}, {4}, {5}, {6})";
+                detailsql = string.Format(detailsql, itemDetail.SerialNum, itemDetail.ProductId, itemDetail.ProductName, itemDetail.UnitPrice,
+                    itemDetail.Discount, itemDetail.Quantity, itemDetail.SubTotalMoney);
                 sqllist.Add(detailsql);
-                string updatesql = " update ProductInventory TotalCount=TotalCount-@Quantity where ProductId=@ProductId";
+                string updatesql = "update ProductInventory Set TotalCount=TotalCount-{0} where ProductId='{1}'";
+                updatesql = string.Format(updatesql, itemDetail.Quantity, itemDetail.ProductId);
                 sqllist.Add(updatesql);
             }
             if (objSMMembers != null)
             {
-                parameter[11] = new SqlParameter("@Points",objSMMembers.Points);
-                parameter[12] = new SqlParameter("@MemberId", objSMMembers.Points);
-
-                string pointsql = "update SMMembers Points+=@Points where MemberId=@MemberId";
+                string pointsql = "update SMMembers Set Points+={0} where MemberId={1}";
+                pointsql = string.Format(pointsql, objSMMembers.Points, objSMMembers.MemberId);
                 sqllist.Add(pointsql);
             }
 
             try
             {
-                return SQLHelp.UpdateByTran(sqllist, parameter);
+                return SQLHelp.UpdateByTran(sqllist, null);
             }
             catch (SqlException ex)
             {

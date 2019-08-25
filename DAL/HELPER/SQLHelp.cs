@@ -92,9 +92,9 @@ namespace DAL
         {
             SqlConnection sqlcon = new SqlConnection(connstring);
             SqlCommand command = new SqlCommand(sql, sqlcon);
+            sqlcon.Open();
             if (parameters != null)
             {
-                sqlcon.Open();
                 command.Parameters.AddRange(parameters);
             }
             try

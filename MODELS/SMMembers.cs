@@ -8,7 +8,7 @@ namespace MODELS
 {
     public class SMMembers
     {
-        public int MemberId { get; set; }
+        public string MemberId { get; set; }
         public string  MemberName { get; set; }
         public int Points { get; set; }
         public string  PhoneNumber { get; set; }

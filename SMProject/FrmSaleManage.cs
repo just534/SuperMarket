@@ -142,8 +142,97 @@ namespace SMProject
                 this.dgvProdutList.DataSource = null;
                  this.dgvProdutList.DataSource = this.bs;
             }
+            else if (e.KeyValue == 112)//按F4进入结算
+            {
+                if (this.dgvProdutList.RowCount == 0) return;
+                Balance();
+            }
 
         }
+
+        #region 商品结算方法
+        private void Balance()
+        {
+            FrmBalance objFrmBalance = new FrmBalance(this.lblTotalMoney.Text.Trim());
+            if (objFrmBalance.ShowDialog() != DialogResult.OK)
+            {
+                if (objFrmBalance.Tag.ToString() == "F4")//用户放弃本次购买
+                {
+                    //重新生成流水号等待结算下一个客户
+                    RestForm();
+                }
+                else if (objFrmBalance.Tag.ToString() == "F5")//用户放弃部分商品购买
+                {
+                    this.txtProductId.Focus();
+                }
+            }else//进入正式结算，获取用户的实付金额和会员卡
+            {
+                SMMembers objSMM = null;
+                if (objFrmBalance.Tag.ToString().Contains('|'))//如果有会员卡号
+                {
+                    string[] info = objFrmBalance.Tag.ToString().Split('|');
+                    this.lblReceivedMoney.Text = info[0];
+                    objSMM = new SMMembers()//新建一个会员卡对象
+                    {
+                        MemberId = info[1],
+                        Points = (int)(Convert.ToDouble(this.lblTotalMoney.Text) / 10.0)
+                    };
+                }
+                else
+                {
+                    this.lblReceivedMoney.Text = objFrmBalance.Tag.ToString();
+                }
+                //显示找零
+                this.lblReturnMoney.Text = (Convert.ToDecimal(this.lblReceivedMoney.Text.Trim()) -
+                    Convert.ToDecimal(this.lblTotalMoney.Text)).ToString();
+                SaleList objSaleList = new SaleList()
+                {
+                    SerialNum = this.lblSerialNum.Text.Trim(),
+                    TotalMoney = Convert.ToDecimal(this.lblTotalMoney.Text.Trim()),
+                    RealReceive = Convert.ToDecimal(this.lblReceivedMoney.Text.Trim()),
+                    ReturnMoney = Convert.ToDecimal(this.lblReturnMoney.Text.Trim()),
+                    SalesPersonId = Program.CurrentPerson.SalesPersonId
+                };
+                foreach (Product item in this.productlist)
+                {
+                    objSaleList.SaleListDetails.Add(new SaleListDetail()
+                    {
+                        SerialNum = this.lblSerialNum.Text.Trim(),
+                        ProductId = item.ProductId,
+                        ProductName = item.ProductName,
+                        Quantity = item.Quantity,
+                        Discount = item.Discount,
+                        SubTotalMoney = item.SubTotal,
+                        UnitPrice = item.UnitPrice
+                    });
+                }
+                try
+                {
+                    objProductService.SaveSaleInfo(objSaleList, objSMM);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("保存销售数据到数据库时发生错误"+ex.Message, "错误信息");
+                    return;
+                }
+                RestForm();
+            }
+        }
+
+        private void RestForm()
+        {
+            this.lblSerialNum.Text = CreateSerialNum();
+            this.dgvProdutList.DataSource = null;
+            this.productlist.Clear();
+            this.txtProductId.Focus();
+            this.txtQuantity.Text = "1";
+            this.txtUnitPrice.Text = "0.00";
+            this.txtDiscount.Text = "0";
+            this.lblReceivedMoney.Text = "0.00";
+        }
+
+
+        #endregion
 
         //新增加一个商品，前提是列表中没有该商品
         private void AddNewProduct()

@@ -9,6 +9,10 @@ namespace MODELS
     [Serializable]
    public class SaleList
     {
+        public SaleList()
+        {
+            this.SaleListDetails = new List<SaleListDetail>();
+        }
         public string SerialNum { get; set; }
         public decimal TotalMoney { get; set; }
         public decimal RealReceive { get; set; }
