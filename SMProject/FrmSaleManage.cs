@@ -90,7 +90,23 @@ namespace SMProject
             if( e.KeyValue == 13)
             #region 添加商品
             {
-                //[1]验证信息
+                #region 非空验证
+                if (this.txtProductId.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("商品编号不能为空", "信息提示");
+                    return;
+                }
+                #endregion
+                #region 数据验证 正则表达式验证
+                List<string> regxExpressList = new List<string>();
+                regxExpressList.Add("^[0-9]*$");
+                if(!Validation.IsRegxMatch(this.txtProductId.Text.Trim(), regxExpressList))
+                {
+                    MessageBox.Show("商品编号不符合要求，必须为数字", "错误提示");
+                    return;
+                }
+                 #endregion
+                
                 //[2]如果当前集合中不存在该商品那么添加该商品
                 var plist = from p in this.productlist
                             where p.ProductId.Equals(this.txtProductId.Text.Trim())
@@ -135,6 +151,7 @@ namespace SMProject
                     this.bs.MoveNext();
                 }
             }
+            #region 删除一行商品
             else if (e.KeyValue == 46)//删除一行
             {
                 if (this.dgvProdutList.RowCount == 0) return;
@@ -142,11 +159,15 @@ namespace SMProject
                 this.dgvProdutList.DataSource = null;
                  this.dgvProdutList.DataSource = this.bs;
             }
+            #endregion
+
+            #region 商品结算
             else if (e.KeyValue == 112)//按F4进入结算
             {
                 if (this.dgvProdutList.RowCount == 0) return;
                 Balance();
             }
+            #endregion
 
         }
 
@@ -215,10 +236,12 @@ namespace SMProject
                     MessageBox.Show("保存销售数据到数据库时发生错误"+ex.Message, "错误信息");
                     return;
                 }
-                RestForm();
+                this.printDocument.Print();//打印小票
+                RestForm();//重置窗口
             }
         }
 
+        #region 重置窗口信息
         private void RestForm()
         {
             this.lblSerialNum.Text = CreateSerialNum();
@@ -230,6 +253,7 @@ namespace SMProject
             this.txtDiscount.Text = "0";
             this.lblReceivedMoney.Text = "0.00";
         }
+        #endregion
 
 
         #endregion
@@ -282,6 +306,11 @@ namespace SMProject
             {
                 this.productlist[i].Num = i + 1;//更新商品序号
             }
+        }
+
+        private void printDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            USBPrint.Print(e, this.productlist, this.lblSerialNum.Text.Trim(), this.lblSalePerson.Text.Trim());
         }
     }
 }

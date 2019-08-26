@@ -439,6 +439,10 @@
             this.lblSalePerson.TabIndex = 67;
             this.lblSalePerson.Text = "无";
             // 
+            // printDocument
+            // 
+            this.printDocument.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument_PrintPage);
+            // 
             // FrmSaleManage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);

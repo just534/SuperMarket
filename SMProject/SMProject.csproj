@@ -68,6 +68,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UsbPrint.cs" />
+    <Compile Include="Validation.cs" />
     <EmbeddedResource Include="FrmBalance.resx">
       <DependentUpon>FrmBalance.cs</DependentUpon>
     </EmbeddedResource>
@@ -107,6 +109,9 @@
       <Project>{7631f8b0-680d-4f7a-8285-d8622eb8b70b}</Project>
       <Name>MODELS</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Common\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
